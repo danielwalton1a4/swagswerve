@@ -1,0 +1,17 @@
+AK8963 mag biases (mG)
+121.26, -7.29, -380.02
+AK8963 mag scale (mG)
+0.93, 0.99, 1.09
+Mag Factory Calibration Values: 
+X-Axis sensitivity offset value 1.21
+Y-Axis sensitivity offset value 1.21
+Z-Axis sensitivity offset value 1.17
+< calibration parameters >
+accel bias [g]: 
+-88.87, 8.09, -33.18
+gyro bias [deg/s]: 
+3.35, -9.06, 0.45
+mag bias [mG]: 
+121.26, -7.29, -380.02
+mag scale []: 
+0.93, 0.99, 1.09
