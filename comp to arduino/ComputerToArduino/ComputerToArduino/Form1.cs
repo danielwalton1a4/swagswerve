@@ -4,11 +4,13 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Text;
+using System.Diagnostics;
 using System.Windows.Forms;
 using System.IO.Ports;
 
 namespace ComputerToArduino
 {
+
     public partial class Form1 : Form
 
     {
@@ -53,7 +55,8 @@ namespace ComputerToArduino
         {
             isConnected = true;
             string selectedPort = comboBox1.GetItemText(comboBox1.SelectedItem);
-            port = new SerialPort(selectedPort, 9600, Parity.None, 8, StopBits.One);
+            port = new SerialPort(selectedPort, 115200, Parity.None, 8, StopBits.One);
+            port.DataReceived += new SerialDataReceivedEventHandler(port_DataReceived);
             port.Open();
             port.Write("#STAR\n");
             button1.Text = "Disconnect";
@@ -160,6 +163,20 @@ namespace ComputerToArduino
         private void groupBox3_Enter(object sender, EventArgs e)
         {
 
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            port.Write("#$wag Money\n");
+            Debug.WriteLine("testing");
+        }
+
+
+
+        private void port_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            // Show all the incoming data in the port's buffer
+            Debug.WriteLine(port.ReadExisting());
         }
     }
 }
