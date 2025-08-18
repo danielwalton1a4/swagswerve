@@ -7,9 +7,11 @@ using System.Text;
 using System.Diagnostics;
 using System.Windows.Forms;
 using System.IO.Ports;
+using System.Runtime;
 
 namespace ComputerToArduino
 {
+
 
     public partial class Form1 : Form
 
@@ -17,9 +19,12 @@ namespace ComputerToArduino
         bool isConnected = false;
         String[] ports;
         SerialPort port;
+        String receivedData = "";
+        
 
         public Form1()
         {
+            CheckForIllegalCrossThreadCalls = false;
             InitializeComponent();
             disableControls();
             getAvailableComPorts();
@@ -124,7 +129,7 @@ namespace ComputerToArduino
         {
             if (isConnected)
             {
-                port.Write("#TEXT" + textBox1.Text + "#\n");
+                port.Write("#" + textBox1.Text + "\n");
             }
         }
 
@@ -167,7 +172,7 @@ namespace ComputerToArduino
 
         private void button3_Click(object sender, EventArgs e)
         {
-            port.Write("#$wag Money\n");
+            port.Write("#encoder\n");
             Debug.WriteLine("testing");
         }
 
@@ -176,7 +181,23 @@ namespace ComputerToArduino
         private void port_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
             // Show all the incoming data in the port's buffer
-            Debug.WriteLine(port.ReadExisting());
+
+            string tempStr = port.ReadExisting();
+            if (tempStr[tempStr.Length - 1] == '\n')
+            {
+                Debug.WriteLine(receivedData + tempStr);
+                textBox1.Text = receivedData + tempStr;
+                receivedData = "";
+            } else
+            {
+                receivedData += tempStr;
+            }
+            
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
