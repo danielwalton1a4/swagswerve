@@ -114,6 +114,11 @@ void setup() {
 }
 
 void loop() {
+  //start by updating the imu
+  #ifndef SKIP_MPU
+    mpu.update();
+  #endif
+
   if(reset){  //if the driver pressed the reset button then we set the zero position to our current position and ignore everything else. boohoo you can't drive while holding down the reset button, cry me a river.
     #ifdef DEBUG
       Serial.print("resetting...\n");

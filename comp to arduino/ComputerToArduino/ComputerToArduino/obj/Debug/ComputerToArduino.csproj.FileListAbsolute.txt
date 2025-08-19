@@ -24,3 +24,29 @@ C:\Users\VeryCoolDood\Desktop\3dp swerve\swagswerve\comp to arduino\ComputerToAr
 C:\Users\VeryCoolDood\Desktop\3dp swerve\swagswerve\comp to arduino\ComputerToArduino\ComputerToArduino\obj\Debug\ComputerToArduino.application
 C:\Users\VeryCoolDood\Desktop\3dp swerve\swagswerve\comp to arduino\ComputerToArduino\ComputerToArduino\obj\Debug\ComputerToArduino.exe
 C:\Users\VeryCoolDood\Desktop\3dp swerve\swagswerve\comp to arduino\ComputerToArduino\ComputerToArduino\obj\Debug\ComputerToArduino.pdb
+C:\Users\Daniel W\Desktop\3DP Swerve Code\swagswerve\comp to arduino\ComputerToArduino\ComputerToArduino\bin\Debug\ComputerToArduino.exe.manifest
+C:\Users\Daniel W\Desktop\3DP Swerve Code\swagswerve\comp to arduino\ComputerToArduino\ComputerToArduino\bin\Debug\ComputerToArduino.application
+C:\Users\Daniel W\Desktop\3DP Swerve Code\swagswerve\comp to arduino\ComputerToArduino\ComputerToArduino\bin\Debug\ComputerToArduino.exe
+C:\Users\Daniel W\Desktop\3DP Swerve Code\swagswerve\comp to arduino\ComputerToArduino\ComputerToArduino\bin\Debug\ComputerToArduino.pdb
+C:\Users\Daniel W\Desktop\3DP Swerve Code\swagswerve\comp to arduino\ComputerToArduino\ComputerToArduino\obj\Debug\ComputerToArduino.csproj.AssemblyReference.cache
+C:\Users\Daniel W\Desktop\3DP Swerve Code\swagswerve\comp to arduino\ComputerToArduino\ComputerToArduino\obj\Debug\ComputerToArduino.Form1.resources
+C:\Users\Daniel W\Desktop\3DP Swerve Code\swagswerve\comp to arduino\ComputerToArduino\ComputerToArduino\obj\Debug\ComputerToArduino.Properties.Resources.resources
+C:\Users\Daniel W\Desktop\3DP Swerve Code\swagswerve\comp to arduino\ComputerToArduino\ComputerToArduino\obj\Debug\ComputerToArduino.csproj.GenerateResource.cache
+C:\Users\Daniel W\Desktop\3DP Swerve Code\swagswerve\comp to arduino\ComputerToArduino\ComputerToArduino\obj\Debug\ComputerToArduino.csproj.CoreCompileInputs.cache
+C:\Users\Daniel W\Desktop\3DP Swerve Code\swagswerve\comp to arduino\ComputerToArduino\ComputerToArduino\obj\Debug\ComputerToArduino.exe.manifest
+C:\Users\Daniel W\Desktop\3DP Swerve Code\swagswerve\comp to arduino\ComputerToArduino\ComputerToArduino\obj\Debug\ComputerToArduino.application
+C:\Users\Daniel W\Desktop\3DP Swerve Code\swagswerve\comp to arduino\ComputerToArduino\ComputerToArduino\obj\Debug\ComputerToArduino.exe
+C:\Users\Daniel W\Desktop\3DP Swerve Code\swagswerve\comp to arduino\ComputerToArduino\ComputerToArduino\obj\Debug\ComputerToArduino.pdb
+C:\Users\stupid person\Desktop\swagswerve\swagswerve\comp to arduino\ComputerToArduino\ComputerToArduino\obj\Debug\ComputerToArduino.csproj.AssemblyReference.cache
+C:\Users\stupid person\Desktop\swagswerve\swagswerve\comp to arduino\ComputerToArduino\ComputerToArduino\obj\Debug\ComputerToArduino.Form1.resources
+C:\Users\stupid person\Desktop\swagswerve\swagswerve\comp to arduino\ComputerToArduino\ComputerToArduino\obj\Debug\ComputerToArduino.Properties.Resources.resources
+C:\Users\stupid person\Desktop\swagswerve\swagswerve\comp to arduino\ComputerToArduino\ComputerToArduino\obj\Debug\ComputerToArduino.csproj.GenerateResource.cache
+C:\Users\stupid person\Desktop\swagswerve\swagswerve\comp to arduino\ComputerToArduino\ComputerToArduino\obj\Debug\ComputerToArduino.csproj.CoreCompileInputs.cache
+C:\Users\stupid person\Desktop\swagswerve\swagswerve\comp to arduino\ComputerToArduino\ComputerToArduino\obj\Debug\ComputerToArduino.exe
+C:\Users\stupid person\Desktop\swagswerve\swagswerve\comp to arduino\ComputerToArduino\ComputerToArduino\obj\Debug\ComputerToArduino.pdb
+C:\Users\stupid person\Desktop\swagswerve\swagswerve\comp to arduino\ComputerToArduino\ComputerToArduino\bin\Debug\ComputerToArduino.exe.manifest
+C:\Users\stupid person\Desktop\swagswerve\swagswerve\comp to arduino\ComputerToArduino\ComputerToArduino\bin\Debug\ComputerToArduino.application
+C:\Users\stupid person\Desktop\swagswerve\swagswerve\comp to arduino\ComputerToArduino\ComputerToArduino\bin\Debug\ComputerToArduino.exe
+C:\Users\stupid person\Desktop\swagswerve\swagswerve\comp to arduino\ComputerToArduino\ComputerToArduino\bin\Debug\ComputerToArduino.pdb
+C:\Users\stupid person\Desktop\swagswerve\swagswerve\comp to arduino\ComputerToArduino\ComputerToArduino\obj\Debug\ComputerToArduino.exe.manifest
+C:\Users\stupid person\Desktop\swagswerve\swagswerve\comp to arduino\ComputerToArduino\ComputerToArduino\obj\Debug\ComputerToArduino.application
