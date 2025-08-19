@@ -13,7 +13,11 @@ using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Runtime;
 using System.Text;
+using System.Timers;
 using System.Windows.Forms;
+using MathNet.Numerics.LinearAlgebra;
+
+
 
 namespace ComputerToArduino
 {
@@ -23,14 +27,67 @@ namespace ComputerToArduino
         String[] ports;
         SerialPort port;
         String receivedData = "";
-        float rotAmount = 0;
-        //string folder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
-        //string fullPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase), "\\frame_visual.png");
-        //Bitmap frameVisual = new Bitmap(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase), "\\frame_visual.png"));
+
+        double LEFT_STICK_DEADZONE = 0.1;   //deadzones for our sticks
+        double RIGHT_STICK_DEADZONE = 0.1;
+        double ZOOM_ZOOM = 100;             //this is a constant that multiplies how far we want to go on each time step. bigger number makes robot go faster.
+        double FRAME_WIDTH = 0.446;         //depth and width of the robot frame in meters
+        double FRAME_DEPTH = 0.446;
+
+
+        float rotAmount = 0;        // used for animating the rotating doohickey in the GUI
+
+        double[] leftStick = { 0, 0 }; //raw left stick values
+        double[] rightStick = { 0, 0 };//raw right stick values
+
+        bool reset = false;             //tied to a button on the controller. set this to 1 when you wat to manually change field alignment
+
+        double leftStickAngle = 0;  //angle of left stick
+        double rightStickAngle = 0; //angle of right stick
+        double leftStickMag = 0;    //magnitude of left stick
+        double rightStickMag = 0;   //magnitude of right stick
+        double yaw = 0;             //yaw from IMU
+        double yawZero = 0;         //zero direction for the bot
+
+        float transGoalX = 0;    //where we want the bot to be on the x axis
+        float transGoalY = 0;    //where we want the bot to be on the y axis
+        float angleGoal = 0;     //what direction we want the bot to be facing
+
+        float frx_c = 0;           //current positions of all the swerve modules
+        float fry_c = 0;
+        float flx_c = 0;
+        float fly_c = 0;
+        float blx_c = 0;
+        float bly_c = 0;
+        float brx_c = 0;
+        float bry_c = 0;
+
+        float frx_g = 0;           //goal positions of all the swerve modules
+        float fry_g = 0;
+        float flx_g = 0;
+        float fly_g = 0;
+        float blx_g = 0;
+        float bly_g = 0;
+        float brx_g = 0;
+        float bry_g = 0;
+
+        float fr_az_g = 0;         //angle we want to set the azimuth of each module to
+        float fl_az_g = 0;
+        float br_az_g = 0;
+        float bl_az_g = 0;
+
+        float fr_dr_g = 0;         //how hard we want to drive each swerve module
+        float fl_dr_g = 0;
+        float br_dr_g = 0;
+        float bl_dr_g = 0;
+
+        private static System.Timers.Timer JoystickTimer;
+
+        Matrix<double> m = Matrix<double>.Build.Random(2, 2);
 
         public Form1()
         {
-            
+            TimerInit();
             CheckForIllegalCrossThreadCalls = false;
             InitializeComponent();
             disableControls();
@@ -46,6 +103,28 @@ namespace ComputerToArduino
                 }
             }
             
+        }
+
+        private  void TimerInit()
+        {
+            JoystickTimer = new System.Timers.Timer(50);
+            JoystickTimer.Elapsed += OnTimedEvent;
+            JoystickTimer.AutoReset = true;
+            JoystickTimer.Enabled = true;
+        }
+
+        private void OnTimedEvent(Object source, ElapsedEventArgs e)
+        {
+            if (checkBox1.Checked)
+            {
+                SendMessage("J1X", (trackBar1.Value * 0.2).ToString());
+                SendMessage("J1Y", (trackBar2.Value * 0.2).ToString());
+            }
+            if (checkBox2.Checked)
+            {
+                SendMessage("J2X", (trackBar3.Value * 0.2).ToString());
+                SendMessage("J2Y", (trackBar4.Value * 0.2).ToString());
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -76,53 +155,6 @@ namespace ComputerToArduino
             enableControls();
         }
 
-        private void Led1CheckboxClicked(object sender, EventArgs e)
-
-        {
-            if(isConnected)
-            {
-                if(checkBox1.Checked)
-                {
-                    port.Write("#LED1ON\n");
-                }else
-                {
-                    port.Write("#LED1OF\n");
-                }
-            }
-        }
-
-        private void Led2CheckboxClicked(object sender, EventArgs e)
-
-        {
-            if (isConnected)
-            {
-                if (checkBox2.Checked)
-                {
-                    port.Write("#LED2ON\n");
-                }
-                else
-                {
-                    port.Write("#LED2OF\n");
-                }
-            }
-        }
-
-        private void Led3CheckboxClicked(object sender, EventArgs e)
-
-        {
-            if (isConnected)
-            {
-                if (checkBox3.Checked)
-                {
-                    port.Write("#LED3ON\n");
-                }
-                else
-                {
-                    port.Write("#LED3OF\n");
-                }
-            }
-        }
-
         private void disconnectFromArduino()
         {
             isConnected = false;
@@ -143,47 +175,34 @@ namespace ComputerToArduino
 
         private void enableControls()
         {
-            checkBox1.Enabled = true;
-            checkBox2.Enabled = true;
-            checkBox3.Enabled = true;
-            button2.Enabled = true;
             textBox1.Enabled = true;
-            groupBox1.Enabled = true;
             groupBox3.Enabled = true;
 
         }
 
         private void disableControls()
         {
-            checkBox1.Enabled = false;
-            checkBox2.Enabled = false;
-            checkBox3.Enabled = false;
-            button2.Enabled = false;
             textBox1.Enabled = false;
-            groupBox1.Enabled = false;
             groupBox3.Enabled = false;
         }
 
         private void resetDefaults()
         {
-            checkBox1.Checked = false;
-            checkBox2.Checked = false;
-            checkBox3.Checked = false;
             textBox1.Text = "";
             
         }
 
-        private void groupBox3_Enter(object sender, EventArgs e)
-        {
-
-        }
-
         private void button3_Click(object sender, EventArgs e)
         {
-            port.Write("#encoder\n");
-            Debug.WriteLine("testing");
+            SendMessage("RST", "1");
+            WriteToDebugBox("Resetting IMU...\n");
+            Debug.Write("Restting IMU...\n");
         }
 
+        public double MAGNITUDE(double x, double y)
+        {
+            return Math.Sqrt(x * x + y * y);
+        }
 
         public static Bitmap RotateImg(Bitmap bmp, float angle)
 
@@ -231,7 +250,6 @@ namespace ComputerToArduino
 
         }
 
-
         private void port_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
             // Show all the incoming data in the port's buffer
@@ -241,42 +259,41 @@ namespace ComputerToArduino
             if (tempStr[tempStr.Length - 1] == '\n')
             {
                 message = receivedData + tempStr;
-                Debug.WriteLine(message);
-                Debug.WriteLine(message.Length);
                 textBox1.Text = message;
                 receivedData = "";
                 switch (GetID(message)) {
                     case "YAW":
                         Bitmap frameVisual = new Bitmap(pictureBox2.Image);
-                        pictureBox1.Image = RotateImg(frameVisual, float.Parse(GetPayload(message)));
+                        try
+                        {
+                            pictureBox1.Image = RotateImg(frameVisual, float.Parse(GetPayload(message)));
+                        } catch
+                        {
+                            Debug.Write("Failed to parse command: ");
+                            Debug.WriteLine(message);
+                            Debug.Write("Payload was: ");
+                            Debug.WriteLine(GetPayload(message));
+                            WriteToDebugBox("Failed to parse command:" + message + "\nPayload was: " + GetPayload(message) + "\n");
+                        }
                         frameVisual.Dispose();
                         break;
                     case "DBG":
-                        Debug.Print(GetPayload(message));
-                        if(textBox2.Text.Length > 1024) {
-                            textBox2.Text.Remove(0, message.Length);
-                        }
-                        textBox2.Text += GetPayload(message);
+                        WriteToDebugBox(GetPayload(message));
                         break;
 
                 }
-                if (message.Length < 10) {
-                    message.Remove(message.Length - 1);
-                    rotAmount = float.Parse(message);
-                    Bitmap frameVisual = new Bitmap(pictureBox2.Image);
-                    pictureBox1.Image = RotateImg(frameVisual, rotAmount);
-                    frameVisual.Dispose();
-                }
+                //if (message.Length < 10) {
+                //    message.Remove(message.Length - 1);
+                //    rotAmount = float.Parse(GetPayload(message));
+                //    Bitmap frameVisual = new Bitmap(pictureBox2.Image);
+                //    pictureBox1.Image = RotateImg(frameVisual, rotAmount);
+                //    frameVisual.Dispose();
+                //}
             } else
             {
                 receivedData += tempStr;
             }
             
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
         }
 
         public String GetID(String str)
@@ -300,7 +317,20 @@ namespace ComputerToArduino
              * RST - reset button value (bool)
              * ACK - acknowledgement (int)
              * YAW - yaw value from the encoder in degrees (float)
+             * EN1 - module 1 encoder reading
+             * EN2 - module 2 encoder reading
+             * EN3 - module 3 encoder reading
+             * EN4 - module 4 encoder reading
              * DBG - debug message (string)
+             * 
+             * M1A - module 1 angle command
+             * M1D - module 1 drive command
+             * M2A - module 2 angle command
+             * M2D - module 2 drive command
+             * M3A - module 3 angle command
+             * M3D - module 3 drive command
+             * M4A - module 4 angle command
+             * M4D - module 4 drive command
              * 
              */
             if (str[0] != '#' || str[str.Length - 1] != '\n' || str.Length > 256)
@@ -320,13 +350,6 @@ namespace ComputerToArduino
 
         public String GetPayload(String str)
         {
-            /* Serial Comms Protocol:
-             * # XXX YYY...Y \n
-             * All messages start with #
-             * XXX is the identifier. Always 3 chars
-             * YYYYY is the payload. total message must b under 256 bytes, but otherwise can be any length
-             * All messages end with \n
-             */
             if (str[0] != '#' || str[str.Length - 1] != '\n' || str.Length > 256)
             {
                 //if the message does not start and end correctly then the message is invalid and we toss it.
@@ -336,17 +359,24 @@ namespace ComputerToArduino
             }
             else
             {
-                return str.Substring(4, str.Length - 2);
+
+                return str.Substring(4, str.Length - 4);
             }
         }
 
-        private void pictureBox1_Click(object sender, EventArgs e)
+        private void WriteToDebugBox(String msg)
         {
-
+            Debug.Print(msg);
+            if (textBox2.Text.Length > 300)
+            {
+                textBox2.Text = "";
+            }
+            textBox2.Text += "\n" + msg;
         }
 
-        private void textBox2_TextChanged(object sender, EventArgs e) {
-
+        private void textBox3_TextChanged(object sender, EventArgs e)
+        {
+            port.Write(textBox3.Text);
         }
     }
 }

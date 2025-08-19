@@ -50,3 +50,9 @@ C:\Users\stupid person\Desktop\swagswerve\swagswerve\comp to arduino\ComputerToA
 C:\Users\stupid person\Desktop\swagswerve\swagswerve\comp to arduino\ComputerToArduino\ComputerToArduino\bin\Debug\ComputerToArduino.pdb
 C:\Users\stupid person\Desktop\swagswerve\swagswerve\comp to arduino\ComputerToArduino\ComputerToArduino\obj\Debug\ComputerToArduino.exe.manifest
 C:\Users\stupid person\Desktop\swagswerve\swagswerve\comp to arduino\ComputerToArduino\ComputerToArduino\obj\Debug\ComputerToArduino.application
+C:\Users\Daniel W\Desktop\3DP Swerve Code\swagswerve\comp to arduino\ComputerToArduino\ComputerToArduino\bin\Debug\ComputerToArduino.exe.config
+C:\Users\Daniel W\Desktop\3DP Swerve Code\swagswerve\comp to arduino\ComputerToArduino\ComputerToArduino\bin\Debug\MathNet.Numerics.dll
+C:\Users\Daniel W\Desktop\3DP Swerve Code\swagswerve\comp to arduino\ComputerToArduino\ComputerToArduino\bin\Debug\System.ValueTuple.dll
+C:\Users\Daniel W\Desktop\3DP Swerve Code\swagswerve\comp to arduino\ComputerToArduino\ComputerToArduino\bin\Debug\MathNet.Numerics.xml
+C:\Users\Daniel W\Desktop\3DP Swerve Code\swagswerve\comp to arduino\ComputerToArduino\ComputerToArduino\bin\Debug\System.ValueTuple.xml
+C:\Users\Daniel W\Desktop\3DP Swerve Code\swagswerve\comp to arduino\ComputerToArduino\ComputerToArduino\obj\Debug\Computer.288A7D85.Up2Date

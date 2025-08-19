@@ -4,17 +4,13 @@
 const int BUTTON_PIN = 7;
 
 MPU9250 mpu;
-float accX0 = 0;
-float accY0 = 0;
-float accZ0 = 0;
 float yaw0 = 0;
-float pitch0 = 0;
-float roll0 = 0;
 
 String inputString = "";         // a string to hold incoming data
 boolean stringComplete = false;  // whether the string is complete
 String commandString = "";
 boolean isConnected = false;
+char tempStr[256] = "";             // temp str for assembling payloads
 
 
 void setup() {
@@ -39,22 +35,27 @@ void loop() {
   if(stringComplete){
     stringComplete = false;
     commandHandler();
+    inputString = "";
   }
   if (mpu.update()) {
       static uint32_t prev_ms = millis();
       if (millis() > prev_ms + 50) {
-          //Serial.println("hi");
-          Serial.println(mpu.getYaw() - yaw0, 2);
+          SendMessage("YAW", String(mpu.getYaw() - yaw0, 2));
           prev_ms = millis();
       }
   }
-  inputString = "";
+  
 }
 
 void commandHandler() {
-    if(inputString.length()>0) {
-      commandString = inputString.substring(1,8);
-    }
+  // im too stupid to get a switch statement to work with the WString class so we're just stacking if-elses
+  if (GetID(inputString) == "RST" && GetPayload(inputString) == "1"){
+    yaw0 = mpu.getYaw();
+  } else if (GetID(inputString) == "M1A"){
+    //TODO: put angle command here
+  } else if (GetID(inputString) == "M1D"){
+    //TODO: put drive command here
+  }
 }
 
 void serialEvent() {
@@ -71,7 +72,12 @@ void serialEvent() {
   }
 }
 
-void GetID(char* str, char* returnMsg) {
+bool SendMessage(String ID, String payload){
+  Serial.print("#" + ID + String(payload) + "\n");
+  return true;
+}
+
+String GetID(String str) {
     /* Serial Comms Protocol:
      * # XXX YYY...Y \n
      * All messages start with #
@@ -94,13 +100,18 @@ void GetID(char* str, char* returnMsg) {
      * DBG - debug message (string)
      * 
      */
-    if (str[0] != '#' || str[strlen(str) - 1] != '\n' || strlen(str) > 256){
-        //if the message does not start and end correctly then the message is invalid and we toss it.
-        strcpy(returnMsg, "INV");
-    } else
-    {
-      
-        //return str.Substring(1, 3);
+    // if (str[0] != '#' || str[strlen(str) - 1] != '\n' || strlen(str) > 256){
+    //     //if the message does not start and end correctly then the message is invalid and we toss it.
+    //     strcpy(returnMsg, "INV");
+    // } else
+    if (!str.startsWith("#") || !str.endsWith("\n") || str.length() > 256){
+      return "INV";
+    } else {
+      return str.substring(1, 4);
     }
+}
+
+String GetPayload(String str){
+  return str.substring(4, str.length() - 1);
 }
 
