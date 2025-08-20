@@ -16,6 +16,7 @@ using System.Text;
 using System.Timers;
 using System.Windows.Forms;
 using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics.LinearAlgebra.Double;
 
 
 
@@ -37,10 +38,12 @@ namespace ComputerToArduino
 
         float rotAmount = 0;        // used for animating the rotating doohickey in the GUI
 
-        double[] leftStick = { 0, 0 }; //raw left stick values
-        double[] rightStick = { 0, 0 };//raw right stick values
-
         bool reset = false;             //tied to a button on the controller. set this to 1 when you wat to manually change field alignment
+
+        double leftStickX = 0;      //xy coords of sticks
+        double rightStickX = 0;
+        double leftStickY = 0;
+        double rightStickY = 0;
 
         double leftStickAngle = 0;  //angle of left stick
         double rightStickAngle = 0; //angle of right stick
@@ -48,38 +51,6 @@ namespace ComputerToArduino
         double rightStickMag = 0;   //magnitude of right stick
         double yaw = 0;             //yaw from IMU
         double yawZero = 0;         //zero direction for the bot
-
-        float transGoalX = 0;    //where we want the bot to be on the x axis
-        float transGoalY = 0;    //where we want the bot to be on the y axis
-        float angleGoal = 0;     //what direction we want the bot to be facing
-
-        float frx_c = 0;           //current positions of all the swerve modules
-        float fry_c = 0;
-        float flx_c = 0;
-        float fly_c = 0;
-        float blx_c = 0;
-        float bly_c = 0;
-        float brx_c = 0;
-        float bry_c = 0;
-
-        float frx_g = 0;           //goal positions of all the swerve modules
-        float fry_g = 0;
-        float flx_g = 0;
-        float fly_g = 0;
-        float blx_g = 0;
-        float bly_g = 0;
-        float brx_g = 0;
-        float bry_g = 0;
-
-        float fr_az_g = 0;         //angle we want to set the azimuth of each module to
-        float fl_az_g = 0;
-        float br_az_g = 0;
-        float bl_az_g = 0;
-
-        float fr_dr_g = 0;         //how hard we want to drive each swerve module
-        float fl_dr_g = 0;
-        float br_dr_g = 0;
-        float bl_dr_g = 0;
 
         private static System.Timers.Timer JoystickTimer;
 
@@ -125,6 +96,8 @@ namespace ComputerToArduino
                 SendMessage("J2X", (trackBar3.Value * 0.2).ToString());
                 SendMessage("J2Y", (trackBar4.Value * 0.2).ToString());
             }
+            leftStickMag = MAGNITUDE(leftStickX, leftStickY);
+            rightStickMag = MAGNITUDE(rightStickX, rightStickY);
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -224,7 +197,7 @@ namespace ComputerToArduino
 
             path.AddRectangle(new RectangleF(0f, 0f, w, h));
 
-            Matrix mtrx = new Matrix();
+            System.Drawing.Drawing2D.Matrix mtrx = new System.Drawing.Drawing2D.Matrix();
 
             mtrx.Rotate(angle);
 
@@ -266,7 +239,8 @@ namespace ComputerToArduino
                         Bitmap frameVisual = new Bitmap(pictureBox2.Image);
                         try
                         {
-                            pictureBox1.Image = RotateImg(frameVisual, float.Parse(GetPayload(message)));
+                            yaw = double.Parse(GetPayload(message));
+                            pictureBox1.Image = RotateImg(frameVisual, (float) yaw);
                         } catch
                         {
                             Debug.Write("Failed to parse command: ");
@@ -377,6 +351,16 @@ namespace ComputerToArduino
         private void textBox3_TextChanged(object sender, EventArgs e)
         {
             port.Write(textBox3.Text);
+        }
+
+        private Vector<double> Rotate2(Vector<double> v, double theta) {
+            // takes in a 2x1 vector and angle (in degrees), returns that vector rotated by the angle
+            double toDeg = Math.PI / 180 * theta;
+            Matrix<double> rotMat = DenseMatrix.OfArray(new double[,] {
+                {Math.Cos(toDeg), -Math.Sin(toDeg)},
+                {Math.Sin(toDeg), Math.Cos(toDeg)}
+            });
+            return rotMat.Multiply(v);
         }
     }
 }

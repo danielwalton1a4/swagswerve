@@ -56,3 +56,4 @@ C:\Users\Daniel W\Desktop\3DP Swerve Code\swagswerve\comp to arduino\ComputerToA
 C:\Users\Daniel W\Desktop\3DP Swerve Code\swagswerve\comp to arduino\ComputerToArduino\ComputerToArduino\bin\Debug\MathNet.Numerics.xml
 C:\Users\Daniel W\Desktop\3DP Swerve Code\swagswerve\comp to arduino\ComputerToArduino\ComputerToArduino\bin\Debug\System.ValueTuple.xml
 C:\Users\Daniel W\Desktop\3DP Swerve Code\swagswerve\comp to arduino\ComputerToArduino\ComputerToArduino\obj\Debug\Computer.288A7D85.Up2Date
+C:\Users\stupid person\Desktop\swagswerve\swagswerve\comp to arduino\ComputerToArduino\ComputerToArduino\obj\Debug\ComputerToArduino.exe.config
