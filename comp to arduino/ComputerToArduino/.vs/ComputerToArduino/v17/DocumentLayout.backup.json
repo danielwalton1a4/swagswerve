@@ -1,17 +1,17 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\stupid person\\Desktop\\swagswerve\\swagswerve\\comp to arduino\\ComputerToArduino\\",
+  "WorkspaceRootPath": "C:\\Users\\Daniel W\\Desktop\\3DP Swerve Code\\swagswerve\\comp to arduino\\ComputerToArduino\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{96828F1E-48B3-45B7-9C6A-2512BDEC3921}|ComputerToArduino\\ComputerToArduino.csproj|c:\\users\\stupid person\\desktop\\swagswerve\\swagswerve\\comp to arduino\\computertoarduino\\computertoarduino\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{96828F1E-48B3-45B7-9C6A-2512BDEC3921}|ComputerToArduino\\ComputerToArduino.csproj|c:\\users\\daniel w\\desktop\\3dp swerve code\\swagswerve\\comp to arduino\\computertoarduino\\computertoarduino\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{96828F1E-48B3-45B7-9C6A-2512BDEC3921}|ComputerToArduino\\ComputerToArduino.csproj|solutionrelative:computertoarduino\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{96828F1E-48B3-45B7-9C6A-2512BDEC3921}|ComputerToArduino\\ComputerToArduino.csproj|C:\\Users\\stupid person\\Desktop\\swagswerve\\swagswerve\\comp to arduino\\ComputerToArduino\\computertoarduino\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "AbsoluteMoniker": "D:0:0:{96828F1E-48B3-45B7-9C6A-2512BDEC3921}|ComputerToArduino\\ComputerToArduino.csproj|C:\\Users\\Daniel W\\Desktop\\3DP Swerve Code\\swagswerve\\comp to arduino\\ComputerToArduino\\computertoarduino\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{96828F1E-48B3-45B7-9C6A-2512BDEC3921}|ComputerToArduino\\ComputerToArduino.csproj|solutionrelative:computertoarduino\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{96828F1E-48B3-45B7-9C6A-2512BDEC3921}|ComputerToArduino\\ComputerToArduino.csproj|C:\\Users\\stupid person\\Desktop\\swagswerve\\swagswerve\\comp to arduino\\ComputerToArduino\\computertoarduino\\form1.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{96828F1E-48B3-45B7-9C6A-2512BDEC3921}|ComputerToArduino\\ComputerToArduino.csproj|C:\\Users\\Daniel W\\Desktop\\3DP Swerve Code\\swagswerve\\comp to arduino\\ComputerToArduino\\computertoarduino\\form1.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{96828F1E-48B3-45B7-9C6A-2512BDEC3921}|ComputerToArduino\\ComputerToArduino.csproj|solutionrelative:computertoarduino\\form1.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -28,11 +28,11 @@
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "Form1.cs",
-              "DocumentMoniker": "C:\\Users\\stupid person\\Desktop\\swagswerve\\swagswerve\\comp to arduino\\ComputerToArduino\\ComputerToArduino\\Form1.cs",
+              "DocumentMoniker": "C:\\Users\\Daniel W\\Desktop\\3DP Swerve Code\\swagswerve\\comp to arduino\\ComputerToArduino\\ComputerToArduino\\Form1.cs",
               "RelativeDocumentMoniker": "ComputerToArduino\\Form1.cs",
-              "ToolTip": "C:\\Users\\stupid person\\Desktop\\swagswerve\\swagswerve\\comp to arduino\\ComputerToArduino\\ComputerToArduino\\Form1.cs*",
-              "RelativeToolTip": "ComputerToArduino\\Form1.cs*",
-              "ViewState": "AgIAAJkAAAAAAAAAAAAswLAAAAAJAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\Daniel W\\Desktop\\3DP Swerve Code\\swagswerve\\comp to arduino\\ComputerToArduino\\ComputerToArduino\\Form1.cs",
+              "RelativeToolTip": "ComputerToArduino\\Form1.cs",
+              "ViewState": "AgIAAAIBAAAAAAAAAAA5wKMBAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-08-18T16:03:24.655Z",
               "IsPinned": true,
@@ -42,25 +42,27 @@
               "$type": "Document",
               "DocumentIndex": 1,
               "Title": "Form1.cs [Design]",
-              "DocumentMoniker": "C:\\Users\\stupid person\\Desktop\\swagswerve\\swagswerve\\comp to arduino\\ComputerToArduino\\ComputerToArduino\\Form1.cs",
+              "DocumentMoniker": "C:\\Users\\Daniel W\\Desktop\\3DP Swerve Code\\swagswerve\\comp to arduino\\ComputerToArduino\\ComputerToArduino\\Form1.cs",
               "RelativeDocumentMoniker": "ComputerToArduino\\Form1.cs",
               "ToolTip": "C:\\Users\\Daniel W\\Desktop\\3DP Swerve Code\\swagswerve\\comp to arduino\\ComputerToArduino\\ComputerToArduino\\Form1.cs [Design]",
-              "RelativeToolTip": "..\\..\\..\\..\\..\\..\\Daniel W\\Desktop\\3DP Swerve Code\\swagswerve\\comp to arduino\\ComputerToArduino\\ComputerToArduino\\Form1.cs [Design]",
+              "RelativeToolTip": "ComputerToArduino\\Form1.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-08-18T05:46:50.218Z",
-              "IsPinned": true
+              "IsPinned": true,
+              "EditorCaption": " [Design]"
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
               "Title": "Form1.Designer.cs",
-              "DocumentMoniker": "C:\\Users\\stupid person\\Desktop\\swagswerve\\swagswerve\\comp to arduino\\ComputerToArduino\\ComputerToArduino\\Form1.Designer.cs",
+              "DocumentMoniker": "C:\\Users\\Daniel W\\Desktop\\3DP Swerve Code\\swagswerve\\comp to arduino\\ComputerToArduino\\ComputerToArduino\\Form1.Designer.cs",
               "RelativeDocumentMoniker": "ComputerToArduino\\Form1.Designer.cs",
-              "ToolTip": "C:\\Users\\stupid person\\Desktop\\swagswerve\\swagswerve\\comp to arduino\\ComputerToArduino\\ComputerToArduino\\Form1.Designer.cs",
+              "ToolTip": "C:\\Users\\Daniel W\\Desktop\\3DP Swerve Code\\swagswerve\\comp to arduino\\ComputerToArduino\\ComputerToArduino\\Form1.Designer.cs",
               "RelativeToolTip": "ComputerToArduino\\Form1.Designer.cs",
-              "ViewState": "AgIAAAoBAAAAAAAAAAAiwB4BAABOAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-18T05:53:47.208Z"
+              "WhenOpened": "2025-08-18T05:53:47.208Z",
+              "EditorCaption": ""
             }
           ]
         }

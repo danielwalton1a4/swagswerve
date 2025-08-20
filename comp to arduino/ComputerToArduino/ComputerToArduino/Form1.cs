@@ -1,29 +1,16 @@
-﻿using ComputerToArduino.Properties;
+﻿using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics.LinearAlgebra.Double;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
-using System.IO;
 using System.IO.Ports;
-using System.Net.NetworkInformation;
-using System.Reflection;
-using System.Runtime;
-using System.Text;
+using System.Numerics;
 using System.Timers;
 using System.Windows.Forms;
-using MathNet.Numerics.LinearAlgebra;
-using MathNet.Numerics.LinearAlgebra.Double;
 
-
-
-namespace ComputerToArduino
-{
-    public partial class Form1 : Form
-    {
+namespace ComputerToArduino {
+    public partial class Form1 : Form {
         bool isConnected = false;
         String[] ports;
         SerialPort port;
@@ -31,7 +18,7 @@ namespace ComputerToArduino
 
         double LEFT_STICK_DEADZONE = 0.1;   //deadzones for our sticks
         double RIGHT_STICK_DEADZONE = 0.1;
-        double ZOOM_ZOOM = 100;             //this is a constant that multiplies how far we want to go on each time step. bigger number makes robot go faster.
+        double ZOOM_ZOOM = 10;             //this is a constant that multiplies how far we want to go on each time step. bigger number makes robot go faster.
         double FRAME_WIDTH = 0.446;         //depth and width of the robot frame in meters
         double FRAME_DEPTH = 0.446;
 
@@ -50,74 +37,182 @@ namespace ComputerToArduino
         double leftStickMag = 0;    //magnitude of left stick
         double rightStickMag = 0;   //magnitude of right stick
         double yaw = 0;             //yaw from IMU
-        double yawZero = 0;         //zero direction for the bot
+        double yaw0 = 0;            //zero direction for the bot
+
+        double transX = 0;          //commands for where we want the bot to end up
+        double transY = 0;
+        double angleCommand = 0;
+        
+        double MAX_ANGLE_STEP = 5;  //this is the maximum amount that our robot will attempt to rotate in a single time step. (in radians)
+
+
+        public class SwerveModule{
+            public int id;
+            public double x;
+            public double y;
+            public double angle;
+            public int driveMotorID;
+            public int steerMotorID;
+            public int encAddress;
+            public double xOffset;
+            public double yOffset;
+            private double frameSize;
+            public double drive;
+            public double commandedAngle;
+
+            public SwerveModule(int idNum, int driveMotorIDnum, int steerMotorIDnum, int encAddressNum, double frameSizeNum) {
+                id = idNum;
+                driveMotorID = driveMotorIDnum;
+                steerMotorID = steerMotorIDnum;
+                encAddress = encAddressNum;
+                frameSize = frameSizeNum;
+                // initialize frame offsets
+                switch(driveMotorIDnum) {
+                    case 0:
+                        Debug.WriteLine("Warning, swerve module was initialized with ID 0. Valid IDs are 1-4.");
+                        break;
+                    case 1:
+                        // i really should be using FRAME_WIDTH here 
+                        xOffset = -1 * frameSize / 2;
+                        yOffset = frameSize / 2;
+                        break;
+                    case 2:
+                        xOffset = frameSize / 2;
+                        yOffset = frameSize / 2;
+                        break;
+                    case 3:
+                        xOffset = frameSize / 2;
+                        yOffset = -1 * frameSize / 2;
+                        break;
+                    case 4:
+                        xOffset = -1 * frameSize / 2;
+                        yOffset = -1 * frameSize / 2;
+                        break;
+                }
+                x = xOffset; y = yOffset; // just gonna init the x and y positions to the
+            }
+        }
+
+        SwerveModule sm0 = new SwerveModule(0, 0, 0, 0, 0);     // module 0 shouldn't actually be used, it's just a default value for when something goes wrong
+        SwerveModule sm1 = new SwerveModule(1, 1, 2, 21, 0.446);
+        SwerveModule sm2 = new SwerveModule(2, 3, 4, 22, 0.446);
+        SwerveModule sm3 = new SwerveModule(3, 5, 6, 23, 0.446);
+        SwerveModule sm4 = new SwerveModule(4, 7, 8, 24, 0.446);
 
         private static System.Timers.Timer JoystickTimer;
 
-        Matrix<double> m = Matrix<double>.Build.Random(2, 2);
-
-        public Form1()
-        {
+        public Form1() {
             TimerInit();
             CheckForIllegalCrossThreadCalls = false;
             InitializeComponent();
             disableControls();
             getAvailableComPorts();
 
-            foreach (string port in ports)
-            {
+
+            foreach (string port in ports) {
                 comboBox1.Items.Add(port);
                 Console.WriteLine(port);
-                if (ports[0] != null)
-                {
+                if (ports[0] != null) {
                     comboBox1.SelectedItem = ports[0];
                 }
             }
-            
+
         }
 
-        private  void TimerInit()
-        {
+        private void TimerInit() {
             JoystickTimer = new System.Timers.Timer(50);
             JoystickTimer.Elapsed += OnTimedEvent;
             JoystickTimer.AutoReset = true;
             JoystickTimer.Enabled = true;
         }
 
-        private void OnTimedEvent(Object source, ElapsedEventArgs e)
-        {
-            if (checkBox1.Checked)
-            {
-                SendMessage("J1X", (trackBar1.Value * 0.2).ToString());
-                SendMessage("J1Y", (trackBar2.Value * 0.2).ToString());
+        private void OnTimedEvent(Object source, ElapsedEventArgs e) {
+            // if the override checkboxes are checked then use those as the stick inputs
+            if (checkBox1.Checked) {
+                leftStickX = trackBar1.Value * 0.2;
+                leftStickY = trackBar2.Value * 0.2;
+            } else {
+                leftStickX = 0;
+                leftStickY = 0;
             }
-            if (checkBox2.Checked)
-            {
-                SendMessage("J2X", (trackBar3.Value * 0.2).ToString());
-                SendMessage("J2Y", (trackBar4.Value * 0.2).ToString());
+            if (checkBox2.Checked) {
+                rightStickX = trackBar3.Value * 0.2;
+                rightStickY = trackBar4.Value * 0.2;
+            } else {
+                rightStickX= 0;
+                rightStickY= 0;
             }
+
+            // calculate stick magnitudes
             leftStickMag = MAGNITUDE(leftStickX, leftStickY);
             rightStickMag = MAGNITUDE(rightStickX, rightStickY);
+
+            // if we're in the deadzone, set positions to 0 and don't updates angles. outside the deadzone we still update the stick angles.
+            if (Math.Abs(leftStickMag) < LEFT_STICK_DEADZONE) {
+                leftStickX = 0;
+                leftStickY = 0;
+            } else {
+                leftStickAngle = Math.Atan2(leftStickY, leftStickX);
+            }
+            if (Math.Abs(rightStickMag) < RIGHT_STICK_DEADZONE) {
+                rightStickX = 0;
+                rightStickY = 0;
+            } else {
+                rightStickAngle = Math.Atan2(rightStickY, rightStickX);
+            }
+
+            // now we set the commanded angle. if the commanded angle is greater than the maximum allowed angle adjustment, clamp it to the max.
+            if (Math.Abs(leftStickAngle - (yaw + yaw0)) < MAX_ANGLE_STEP) {
+                angleCommand = leftStickAngle;
+            } else if (Math.Abs(leftStickAngle - (yaw + yaw0)) > 0 ) {
+                angleCommand = yaw + yaw0 + MAX_ANGLE_STEP;
+            } else {
+                angleCommand = yaw + yaw0 - MAX_ANGLE_STEP;
+            }
+
+            // now we set the translation commands
+            // TODO: make this logarithmic instead of linear
+            transX = leftStickX*ZOOM_ZOOM;
+            transY = leftStickY*ZOOM_ZOOM;
+
+            // we now know how much we want to rotate and translate. time to generate swerve commands
+            for (int i = 1; i < 5; i++) {
+                
+                double[] dummyCommand = CalcPosAngleDrive(GetModule(i));
+                Debug.WriteLine("dummy command is: " + dummyCommand.ToString());
+                GetModule(i).commandedAngle = dummyCommand[2];
+                GetModule(i).drive = dummyCommand[3];
+                SendMotorCommands(GetModule(i));
+            }
+            
+
+            // code for updating swerve module debug UI
+            if(comboBox2.SelectedItem != null) {
+                Debug.WriteLine("selected item is: " + comboBox2.SelectedItem);
+                int currentModule = int.Parse(comboBox2.SelectedItem.ToString());
+                Debug.WriteLine("current module is: " + currentModule);
+                Debug.WriteLine("commanded angle is: " + GetModule(currentModule).commandedAngle);
+                Bitmap frameVisual2 = new Bitmap(pictureBox4.Image);
+                pictureBox3.Image = RotateImg(frameVisual2, (float)GetModule(currentModule).angle);
+                textBox5.Text = "Angle: " + GetModule(currentModule).angle.ToString();
+                textBox6.Text = "Drive: " + GetModule(currentModule).drive.ToString();
+                textBox7.Text = "AngCom: " + GetModule(currentModule).commandedAngle.ToString();
+            }
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            if (!isConnected)
-            {
+        private void button1_Click(object sender, EventArgs e) {
+            if (!isConnected) {
                 connectToArduino();
-            } else
-            {
+            } else {
                 disconnectFromArduino();
             }
         }
 
-        void getAvailableComPorts()
-        {
+        void getAvailableComPorts() {
             ports = SerialPort.GetPortNames();
         }
 
-        private void connectToArduino()
-        {
+        private void connectToArduino() {
             isConnected = true;
             string selectedPort = comboBox1.GetItemText(comboBox1.SelectedItem);
             port = new SerialPort(selectedPort, 115200, Parity.None, 8, StopBits.One);
@@ -128,8 +223,7 @@ namespace ComputerToArduino
             enableControls();
         }
 
-        private void disconnectFromArduino()
-        {
+        private void disconnectFromArduino() {
             isConnected = false;
             port.Write("#STOP\n");
             port.Close();
@@ -138,48 +232,45 @@ namespace ComputerToArduino
             resetDefaults();
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-            if (isConnected)
-            {
+        private void button2_Click(object sender, EventArgs e) {
+            if (isConnected) {
                 port.Write("#" + textBox1.Text + "\n");
             }
         }
 
-        private void enableControls()
-        {
+        private void enableControls() {
             textBox1.Enabled = true;
+            groupBox1.Enabled = true;
             groupBox3.Enabled = true;
-
+            groupBox4.Enabled = true;
+            groupBox5.Enabled = true;
+            groupBox6.Enabled = true;
         }
 
-        private void disableControls()
-        {
+        private void disableControls() {
             textBox1.Enabled = false;
+            groupBox1.Enabled = false;
             groupBox3.Enabled = false;
+            groupBox4.Enabled = false;
+            groupBox5.Enabled = false;
+            groupBox6.Enabled = false;
         }
 
-        private void resetDefaults()
-        {
+        private void resetDefaults() {
             textBox1.Text = "";
-            
         }
 
-        private void button3_Click(object sender, EventArgs e)
-        {
+        private void button3_Click(object sender, EventArgs e) {
             SendMessage("RST", "1");
             WriteToDebugBox("Resetting IMU...\n");
             Debug.Write("Restting IMU...\n");
         }
 
-        public double MAGNITUDE(double x, double y)
-        {
+        public double MAGNITUDE(double x, double y) {
             return Math.Sqrt(x * x + y * y);
         }
 
-        public static Bitmap RotateImg(Bitmap bmp, float angle)
-
-        {
+        public static Bitmap RotateImg(Bitmap bmp, float angle) {
 
             int w = bmp.Width;
 
@@ -223,26 +314,37 @@ namespace ComputerToArduino
 
         }
 
-        private void port_DataReceived(object sender, SerialDataReceivedEventArgs e)
-        {
+        private SwerveModule GetModule(int ID) {
+            // returns the swerve module object with the corresponding ID. defaults to sm0, which shouldn't ever actually happen.
+            switch (ID) {
+                case 1:
+                    return sm1;
+                case 2:
+                    return sm2;
+                case 3:
+                    return sm3;
+                case 4:
+                    return sm4;
+            }
+            return sm0;
+        }
+
+        private void port_DataReceived(object sender, SerialDataReceivedEventArgs e) {
             // Show all the incoming data in the port's buffer
 
             string tempStr = port.ReadExisting();
             string message = "";
-            if (tempStr[tempStr.Length - 1] == '\n')
-            {
+            if (tempStr[tempStr.Length - 1] == '\n') {
                 message = receivedData + tempStr;
                 textBox1.Text = message;
                 receivedData = "";
                 switch (GetID(message)) {
                     case "YAW":
                         Bitmap frameVisual = new Bitmap(pictureBox2.Image);
-                        try
-                        {
+                        try {
                             yaw = double.Parse(GetPayload(message));
-                            pictureBox1.Image = RotateImg(frameVisual, (float) yaw);
-                        } catch
-                        {
+                            pictureBox1.Image = RotateImg(frameVisual, (float)yaw);
+                        } catch {
                             Debug.Write("Failed to parse command: ");
                             Debug.WriteLine(message);
                             Debug.Write("Payload was: ");
@@ -263,15 +365,13 @@ namespace ComputerToArduino
                 //    pictureBox1.Image = RotateImg(frameVisual, rotAmount);
                 //    frameVisual.Dispose();
                 //}
-            } else
-            {
+            } else {
                 receivedData += tempStr;
             }
-            
+
         }
 
-        public String GetID(String str)
-        {
+        public String GetID(String str) {
             /* Serial Comms Protocol:
              * # XXX YYY...Y \n
              * All messages start with #
@@ -297,70 +397,99 @@ namespace ComputerToArduino
              * EN4 - module 4 encoder reading
              * DBG - debug message (string)
              * 
-             * M1A - module 1 angle command
-             * M1D - module 1 drive command
-             * M2A - module 2 angle command
-             * M2D - module 2 drive command
-             * M3A - module 3 angle command
-             * M3D - module 3 drive command
-             * M4A - module 4 angle command
-             * M4D - module 4 drive command
+             * M1A - module 1 angle (float, radians)
+             * M1D - module 1 drive (float)
+             * M2A - module 2 angle (float, radians)
+             * M2D - module 2 drive (float)
+             * M3A - module 3 angle (float, radians)
+             * M3D - module 3 drive (float)
+             * M4A - module 4 angle (float, radians)
+             * M4D - module 4 drive (float)
              * 
              */
-            if (str[0] != '#' || str[str.Length - 1] != '\n' || str.Length > 256)
-            {
+            if (str[0] != '#' || str[str.Length - 1] != '\n' || str.Length > 256) {
                 //if the message does not start and end correctly then the message is invalid and we toss it.
                 return "INV";
-            } else
-            {
+            } else {
                 return str.Substring(1, 3);
             }
         }
 
         public bool SendMessage(String ID, String payload) {
-            port.Write("#" + ID + payload + "\n");
-            return true;
+            if(port != null) {
+                port.Write("#" + ID + payload + "\n");
+                return true;
+            } else {
+                return false;
+            }
+
         }
 
-        public String GetPayload(String str)
-        {
-            if (str[0] != '#' || str[str.Length - 1] != '\n' || str.Length > 256)
-            {
+        public String GetPayload(String str) {
+            if (str[0] != '#' || str[str.Length - 1] != '\n' || str.Length > 256) {
                 //if the message does not start and end correctly then the message is invalid and we toss it.
                 //it is technically possible that we might want to send a payload that happens to exactly match
                 //the binary representation of "INVALID_MESSAGE" but like, too bad. you dont get to do that now.
                 return "INVALID_MESSAGE";
-            }
-            else
-            {
+            } else {
 
                 return str.Substring(4, str.Length - 4);
             }
         }
 
-        private void WriteToDebugBox(String msg)
-        {
+        private void WriteToDebugBox(String msg) {
             Debug.Print(msg);
-            if (textBox2.Text.Length > 300)
-            {
+            if (textBox2.Text.Length > 300) {
                 textBox2.Text = "";
             }
             textBox2.Text += "\n" + msg;
         }
 
-        private void textBox3_TextChanged(object sender, EventArgs e)
-        {
+        private void textBox3_TextChanged(object sender, EventArgs e) {
             port.Write(textBox3.Text);
+        }
+
+        private double deg2rad(double angle) {
+            // can't believe this isn't just already in Math.h smh my head
+            return angle * Math.PI / 180;
+        }
+
+        private double rad2deg(double angle) {
+            // can't believe this isn't just already in Math.h smh my head
+            return angle * 180 / Math.PI;
         }
 
         private Vector<double> Rotate2(Vector<double> v, double theta) {
             // takes in a 2x1 vector and angle (in degrees), returns that vector rotated by the angle
-            double toDeg = Math.PI / 180 * theta;
+            double angle = deg2rad(theta);
             Matrix<double> rotMat = DenseMatrix.OfArray(new double[,] {
-                {Math.Cos(toDeg), -Math.Sin(toDeg)},
-                {Math.Sin(toDeg), Math.Cos(toDeg)}
+                {Math.Cos(angle), -Math.Sin(angle)},
+                {Math.Sin(angle), Math.Cos(angle)}
             });
             return rotMat.Multiply(v);
         }
+
+        private double[] CalcPosAngleDrive(SwerveModule mod) {
+            // Calculates desired XY position of swerve module, pointing angle between current and desired position, and drive magnitude.
+            // return format: { x, y, pointing angle, magnitude }
+            
+            // calculate the xy position of the module relative to the center of the robot
+            Vector<double> oldPos = Rotate2(DenseVector.OfArray(new double[] { mod.xOffset, mod.yOffset }), yaw + yaw0);
+
+            // calculate where we want the module to end up
+            Vector<double> newPos = Rotate2(DenseVector.OfArray(new double[] { mod.xOffset, mod.yOffset }), angleCommand);
+            newPos[0] += transX;
+            newPos[1] += transY;
+
+            Vector<double> pointingVector = newPos - oldPos;
+            double[] returnVar = { newPos[0], newPos[1], Math.Atan2(pointingVector[1], pointingVector[0]), MAGNITUDE(pointingVector[0], pointingVector[1]) };
+            return returnVar;
+        }
+
+        private void SendMotorCommands(SwerveModule mod) {
+            SendMessage("M" + mod.id.ToString() + "A", mod.commandedAngle.ToString());
+            SendMessage("M" + mod.id.ToString() + "D", mod.drive.ToString());
+        }
+
     }
 }
