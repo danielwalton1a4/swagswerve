@@ -27,15 +27,15 @@ namespace ComputerToArduino {
 
         bool reset = false;             //tied to a button on the controller. set this to 1 when you wat to manually change field alignment
 
-        double leftStickX = 0;      //xy coords of sticks
-        double rightStickX = 0;
-        double leftStickY = 0;
-        double rightStickY = 0;
+        double steerStickX = 0;      //xy coords of sticks
+        double driveStickX = 0;
+        double steerStickY = 0;
+        double driveStickY = 0;
 
-        double leftStickAngle = 0;  //angle of left stick
-        double rightStickAngle = 0; //angle of right stick
-        double leftStickMag = 0;    //magnitude of left stick
-        double rightStickMag = 0;   //magnitude of right stick
+        double steerStickAngle = 0;  //angle of left stick
+        double driveStickAngle = 0; //angle of right stick
+        double steerStickMag = 0;    //magnitude of left stick
+        double driveStickMag = 0;   //magnitude of right stick
         double yaw = 0;             //yaw from IMU
         double yaw0 = 0;            //zero direction for the bot
 
@@ -43,7 +43,10 @@ namespace ComputerToArduino {
         double transY = 0;
         double angleCommand = 0;
         
-        double MAX_ANGLE_STEP = 5;  //this is the maximum amount that our robot will attempt to rotate in a single time step. (in radians)
+        double MAX_ANGLE_STEP = 15;  //this is the maximum amount that our robot will attempt to rotate in a single time step. (in radians)
+
+        int loopNum = 0;
+        int prevMod = 0;            // tbh this rlly shouldn't exist and is a very bad workaround for a crashing issue but idk how to fix it the right way so you'll just have to live with this
 
 
         public class SwerveModule{
@@ -127,44 +130,46 @@ namespace ComputerToArduino {
         }
 
         private void OnTimedEvent(Object source, ElapsedEventArgs e) {
+            loopNum++;
+
             // if the override checkboxes are checked then use those as the stick inputs
             if (checkBox1.Checked) {
-                leftStickX = trackBar1.Value * 0.2;
-                leftStickY = trackBar2.Value * 0.2;
+                steerStickX = trackBar1.Value * 0.2;
+                steerStickY = trackBar2.Value * 0.2;
             } else {
-                leftStickX = 0;
-                leftStickY = 0;
+                steerStickX = 0;
+                steerStickY = 0;
             }
             if (checkBox2.Checked) {
-                rightStickX = trackBar3.Value * 0.2;
-                rightStickY = trackBar4.Value * 0.2;
+                driveStickX = trackBar4.Value * 0.2;
+                driveStickY = trackBar3.Value * 0.2;
             } else {
-                rightStickX= 0;
-                rightStickY= 0;
+                driveStickX= 0;
+                driveStickY= 0;
             }
 
             // calculate stick magnitudes
-            leftStickMag = MAGNITUDE(leftStickX, leftStickY);
-            rightStickMag = MAGNITUDE(rightStickX, rightStickY);
+            steerStickMag = MAGNITUDE(steerStickX, steerStickY);
+            driveStickMag = MAGNITUDE(driveStickX, driveStickY);
 
             // if we're in the deadzone, set positions to 0 and don't updates angles. outside the deadzone we still update the stick angles.
-            if (Math.Abs(leftStickMag) < LEFT_STICK_DEADZONE) {
-                leftStickX = 0;
-                leftStickY = 0;
+            if (Math.Abs(steerStickMag) < LEFT_STICK_DEADZONE) {
+                steerStickX = 0;
+                steerStickY = 0;
             } else {
-                leftStickAngle = Math.Atan2(leftStickY, leftStickX);
+                steerStickAngle = NormalizeAngle(rad2deg(Math.Atan2(steerStickY, steerStickX)) + 90);
             }
-            if (Math.Abs(rightStickMag) < RIGHT_STICK_DEADZONE) {
-                rightStickX = 0;
-                rightStickY = 0;
+            if (Math.Abs(driveStickMag) < RIGHT_STICK_DEADZONE) {
+                driveStickX = 0;
+                driveStickY = 0;
             } else {
-                rightStickAngle = Math.Atan2(rightStickY, rightStickX);
+                driveStickAngle = NormalizeAngle(rad2deg(Math.Atan2(driveStickY, driveStickX)) + 90);
             }
 
             // now we set the commanded angle. if the commanded angle is greater than the maximum allowed angle adjustment, clamp it to the max.
-            if (Math.Abs(leftStickAngle - (yaw + yaw0)) < MAX_ANGLE_STEP) {
-                angleCommand = leftStickAngle;
-            } else if (Math.Abs(leftStickAngle - (yaw + yaw0)) > 0 ) {
+            if (Math.Abs(steerStickAngle - (yaw + yaw0)) < MAX_ANGLE_STEP) {
+                angleCommand = steerStickAngle;
+            } else if (steerStickAngle - (yaw + yaw0) > 0 ) {
                 angleCommand = yaw + yaw0 + MAX_ANGLE_STEP;
             } else {
                 angleCommand = yaw + yaw0 - MAX_ANGLE_STEP;
@@ -172,14 +177,23 @@ namespace ComputerToArduino {
 
             // now we set the translation commands
             // TODO: make this logarithmic instead of linear
-            transX = leftStickX*ZOOM_ZOOM;
-            transY = leftStickY*ZOOM_ZOOM;
+            transX = driveStickX*ZOOM_ZOOM;
+            transY = driveStickY*ZOOM_ZOOM;
 
             // we now know how much we want to rotate and translate. time to generate swerve commands
             for (int i = 1; i < 5; i++) {
                 
                 double[] dummyCommand = CalcPosAngleDrive(GetModule(i));
-                Debug.WriteLine("dummy command is: " + dummyCommand.ToString());
+                //if(loopNum % 20 == 0) {
+                //    Debug.WriteLine("Debug info for module " + i + ":");
+                //    Debug.WriteLine("dummy command x: " + dummyCommand[0]);
+                //    Debug.WriteLine("dummy command y: " + dummyCommand[1]);
+                //    Debug.WriteLine("dummy command pointing angle: " + dummyCommand[2]);
+                //    Debug.WriteLine("dummy command mag: " + dummyCommand[3]);
+                //    Debug.WriteLine("======\n");
+                //}
+                
+
                 GetModule(i).commandedAngle = dummyCommand[2];
                 GetModule(i).drive = dummyCommand[3];
                 SendMotorCommands(GetModule(i));
@@ -189,15 +203,27 @@ namespace ComputerToArduino {
             // code for updating swerve module debug UI
             if(comboBox2.SelectedItem != null) {
                 Debug.WriteLine("selected item is: " + comboBox2.SelectedItem);
-                int currentModule = int.Parse(comboBox2.SelectedItem.ToString());
-                Debug.WriteLine("current module is: " + currentModule);
-                Debug.WriteLine("commanded angle is: " + GetModule(currentModule).commandedAngle);
-                Bitmap frameVisual2 = new Bitmap(pictureBox4.Image);
-                pictureBox3.Image = RotateImg(frameVisual2, (float)GetModule(currentModule).angle);
-                textBox5.Text = "Angle: " + GetModule(currentModule).angle.ToString();
-                textBox6.Text = "Drive: " + GetModule(currentModule).drive.ToString();
-                textBox7.Text = "AngCom: " + GetModule(currentModule).commandedAngle.ToString();
+                try {
+                    int currentModule = int.Parse(comboBox2.SelectedItem.ToString());
+                    Bitmap frameVisual2 = new Bitmap(pictureBox4.Image);
+                    pictureBox3.Image = RotateImg(frameVisual2, (float)GetModule(currentModule).commandedAngle);
+                    frameVisual2.Dispose();
+                    textBox5.Text = "Angle: " + GetModule(currentModule).angle.ToString();
+                    textBox6.Text = "Drive: " + GetModule(currentModule).drive.ToString();
+                    textBox7.Text = "AngCom: " + GetModule(currentModule).commandedAngle.ToString();
+                } catch {
+                    Debug.WriteLine("uh oh u just tried to access something u weren't supposed to. smh my head.");
+                }
+                
             }
+            // code for updating overall robot UI
+            textBox8.Text = "Angle: " + NormalizeAngle(yaw + yaw0).ToString();
+            textBox9.Text = "Desired Angle: " + NormalizeAngle(angleCommand).ToString();
+            textBox10.Text = "TransX: " + transX.ToString();
+            textBox11.Text = "TransY: " + transY.ToString();
+            textBox12.Text = "Steer Stick Angle: " + NormalizeAngle(steerStickAngle).ToString();
+            textBox13.Text = "Yaw0: " + yaw0.ToString();
+
         }
 
         private void button1_Click(object sender, EventArgs e) {
@@ -245,6 +271,7 @@ namespace ComputerToArduino {
             groupBox4.Enabled = true;
             groupBox5.Enabled = true;
             groupBox6.Enabled = true;
+            groupBox7.Enabled = true;
         }
 
         private void disableControls() {
@@ -254,6 +281,7 @@ namespace ComputerToArduino {
             groupBox4.Enabled = false;
             groupBox5.Enabled = false;
             groupBox6.Enabled = false;
+            groupBox7.Enabled = false;
         }
 
         private void resetDefaults() {
@@ -342,7 +370,7 @@ namespace ComputerToArduino {
                     case "YAW":
                         Bitmap frameVisual = new Bitmap(pictureBox2.Image);
                         try {
-                            yaw = double.Parse(GetPayload(message));
+                            yaw = NormalizeAngle(double.Parse(GetPayload(message)));
                             pictureBox1.Image = RotateImg(frameVisual, (float)yaw);
                         } catch {
                             Debug.Write("Failed to parse command: ");
@@ -416,7 +444,7 @@ namespace ComputerToArduino {
         }
 
         public bool SendMessage(String ID, String payload) {
-            if(port != null) {
+            if(port != null && port.IsOpen) {
                 port.Write("#" + ID + payload + "\n");
                 return true;
             } else {
@@ -474,15 +502,15 @@ namespace ComputerToArduino {
             // return format: { x, y, pointing angle, magnitude }
             
             // calculate the xy position of the module relative to the center of the robot
-            Vector<double> oldPos = Rotate2(DenseVector.OfArray(new double[] { mod.xOffset, mod.yOffset }), yaw + yaw0);
+            Vector<double> oldPos = Rotate2(DenseVector.OfArray(new double[] { mod.xOffset, mod.yOffset }), NormalizeAngle(yaw + yaw0));
 
             // calculate where we want the module to end up
-            Vector<double> newPos = Rotate2(DenseVector.OfArray(new double[] { mod.xOffset, mod.yOffset }), angleCommand);
+            Vector<double> newPos = Rotate2(DenseVector.OfArray(new double[] { mod.xOffset, mod.yOffset }), NormalizeAngle(angleCommand));
             newPos[0] += transX;
             newPos[1] += transY;
 
-            Vector<double> pointingVector = newPos - oldPos;
-            double[] returnVar = { newPos[0], newPos[1], Math.Atan2(pointingVector[1], pointingVector[0]), MAGNITUDE(pointingVector[0], pointingVector[1]) };
+            Vector<double> pointingVector = -newPos + oldPos;
+            double[] returnVar = { newPos[0], newPos[1], rad2deg(Math.Atan2(pointingVector[1], pointingVector[0])), MAGNITUDE(pointingVector[0], pointingVector[1]) };
             return returnVar;
         }
 
@@ -491,5 +519,21 @@ namespace ComputerToArduino {
             SendMessage("M" + mod.id.ToString() + "D", mod.drive.ToString());
         }
 
+        private double NormalizeAngle(double angle) {
+            // remaps the input angle to ensure it's always in the range { -180, 180 }.
+            // i.e. 270 gets remapped to -90
+            // (input and return angle are in degrees)
+
+            // first we get rid of any complete revolutions with a simple modulo
+            double num = angle % 360;
+            
+            // then we do the remap
+            if (num > 180) {
+                num = -(180 + (180 + num));
+            } else if(num < -180) {
+                num = (180 - (-180 - num));
+            }
+            return num;
+        }
     }
 }

@@ -52,13 +52,20 @@ namespace ComputerToArduino
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.button2 = new System.Windows.Forms.Button();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.textBox7 = new System.Windows.Forms.TextBox();
             this.pictureBox4 = new System.Windows.Forms.PictureBox();
             this.textBox6 = new System.Windows.Forms.TextBox();
             this.textBox5 = new System.Windows.Forms.TextBox();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.comboBox2 = new System.Windows.Forms.ComboBox();
             this.textBox4 = new System.Windows.Forms.TextBox();
-            this.textBox7 = new System.Windows.Forms.TextBox();
+            this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.textBox13 = new System.Windows.Forms.TextBox();
+            this.textBox12 = new System.Windows.Forms.TextBox();
+            this.textBox11 = new System.Windows.Forms.TextBox();
+            this.textBox10 = new System.Windows.Forms.TextBox();
+            this.textBox8 = new System.Windows.Forms.TextBox();
+            this.textBox9 = new System.Windows.Forms.TextBox();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -73,6 +80,7 @@ namespace ComputerToArduino
             this.groupBox6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
+            this.groupBox7.SuspendLayout();
             this.SuspendLayout();
             // 
             // button1
@@ -146,7 +154,7 @@ namespace ComputerToArduino
             this.pictureBox1.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(288, 3);
+            this.pictureBox1.Location = new System.Drawing.Point(7, 20);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(400, 400);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
@@ -187,7 +195,7 @@ namespace ComputerToArduino
             // 
             // trackBar1
             // 
-            this.trackBar1.Cursor = System.Windows.Forms.Cursors.WaitCursor;
+            this.trackBar1.Cursor = System.Windows.Forms.Cursors.Default;
             this.trackBar1.Location = new System.Drawing.Point(8, 20);
             this.trackBar1.Maximum = 5;
             this.trackBar1.Minimum = -5;
@@ -196,7 +204,6 @@ namespace ComputerToArduino
             this.trackBar1.TabIndex = 14;
             this.trackBar1.Tag = "";
             this.trackBar1.TickStyle = System.Windows.Forms.TickStyle.Both;
-            this.trackBar1.UseWaitCursor = true;
             // 
             // groupBox1
             // 
@@ -220,9 +227,9 @@ namespace ComputerToArduino
             this.checkBox2.AutoSize = true;
             this.checkBox2.Location = new System.Drawing.Point(6, 182);
             this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(123, 20);
+            this.checkBox2.Size = new System.Drawing.Size(120, 20);
             this.checkBox2.TabIndex = 19;
-            this.checkBox2.Text = "Override Angle?";
+            this.checkBox2.Text = "Override Drive?";
             this.checkBox2.UseVisualStyleBackColor = true;
             // 
             // checkBox1
@@ -230,9 +237,9 @@ namespace ComputerToArduino
             this.checkBox1.AutoSize = true;
             this.checkBox1.Location = new System.Drawing.Point(7, 71);
             this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(120, 20);
+            this.checkBox1.Size = new System.Drawing.Size(123, 20);
             this.checkBox1.TabIndex = 16;
-            this.checkBox1.Text = "Override Drive?";
+            this.checkBox1.Text = "Override Angle?";
             this.checkBox1.UseVisualStyleBackColor = true;
             // 
             // trackBar2
@@ -320,15 +327,27 @@ namespace ComputerToArduino
             this.groupBox6.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox6.Size = new System.Drawing.Size(278, 217);
+            this.groupBox6.Size = new System.Drawing.Size(490, 217);
             this.groupBox6.TabIndex = 11;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Swerve Module Info";
             // 
+            // textBox7
+            // 
+            this.textBox7.Location = new System.Drawing.Point(163, 103);
+            this.textBox7.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox7.Multiline = true;
+            this.textBox7.Name = "textBox7";
+            this.textBox7.ReadOnly = true;
+            this.textBox7.Size = new System.Drawing.Size(211, 24);
+            this.textBox7.TabIndex = 18;
+            this.textBox7.Text = "Desired Angle:";
+            this.textBox7.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // pictureBox4
             // 
             this.pictureBox4.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox4.Image")));
-            this.pictureBox4.Location = new System.Drawing.Point(39, 107);
+            this.pictureBox4.Location = new System.Drawing.Point(189, 178);
             this.pictureBox4.Name = "pictureBox4";
             this.pictureBox4.Size = new System.Drawing.Size(100, 50);
             this.pictureBox4.TabIndex = 15;
@@ -342,7 +361,7 @@ namespace ComputerToArduino
             this.textBox6.Multiline = true;
             this.textBox6.Name = "textBox6";
             this.textBox6.ReadOnly = true;
-            this.textBox6.Size = new System.Drawing.Size(109, 24);
+            this.textBox6.Size = new System.Drawing.Size(211, 24);
             this.textBox6.TabIndex = 17;
             this.textBox6.Text = "Drive:";
             this.textBox6.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -354,7 +373,7 @@ namespace ComputerToArduino
             this.textBox5.Multiline = true;
             this.textBox5.Name = "textBox5";
             this.textBox5.ReadOnly = true;
-            this.textBox5.Size = new System.Drawing.Size(109, 24);
+            this.textBox5.Size = new System.Drawing.Size(211, 24);
             this.textBox5.TabIndex = 16;
             this.textBox5.Text = "Angle:";
             this.textBox5.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -364,7 +383,7 @@ namespace ComputerToArduino
             this.pictureBox3.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.pictureBox3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.pictureBox3.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox3.Image")));
-            this.pictureBox3.Location = new System.Drawing.Point(7, 47);
+            this.pictureBox3.Location = new System.Drawing.Point(6, 47);
             this.pictureBox3.Name = "pictureBox3";
             this.pictureBox3.Size = new System.Drawing.Size(150, 150);
             this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
@@ -397,17 +416,95 @@ namespace ComputerToArduino
             this.textBox4.TabIndex = 2;
             this.textBox4.Text = "Module #";
             // 
-            // textBox7
+            // groupBox7
             // 
-            this.textBox7.Location = new System.Drawing.Point(163, 103);
-            this.textBox7.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.textBox7.Multiline = true;
-            this.textBox7.Name = "textBox7";
-            this.textBox7.ReadOnly = true;
-            this.textBox7.Size = new System.Drawing.Size(109, 24);
-            this.textBox7.TabIndex = 18;
-            this.textBox7.Text = "Desired Angle:";
-            this.textBox7.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.groupBox7.Controls.Add(this.textBox13);
+            this.groupBox7.Controls.Add(this.textBox12);
+            this.groupBox7.Controls.Add(this.textBox11);
+            this.groupBox7.Controls.Add(this.pictureBox1);
+            this.groupBox7.Controls.Add(this.textBox10);
+            this.groupBox7.Controls.Add(this.textBox8);
+            this.groupBox7.Controls.Add(this.textBox9);
+            this.groupBox7.Location = new System.Drawing.Point(287, 3);
+            this.groupBox7.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBox7.Name = "groupBox7";
+            this.groupBox7.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBox7.Size = new System.Drawing.Size(759, 391);
+            this.groupBox7.TabIndex = 19;
+            this.groupBox7.TabStop = false;
+            this.groupBox7.Text = "Robot Info";
+            // 
+            // textBox13
+            // 
+            this.textBox13.Location = new System.Drawing.Point(479, 58);
+            this.textBox13.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox13.Multiline = true;
+            this.textBox13.Name = "textBox13";
+            this.textBox13.ReadOnly = true;
+            this.textBox13.Size = new System.Drawing.Size(253, 24);
+            this.textBox13.TabIndex = 21;
+            this.textBox13.Text = "Yaw0: ";
+            this.textBox13.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // textBox12
+            // 
+            this.textBox12.Location = new System.Drawing.Point(479, 170);
+            this.textBox12.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox12.Multiline = true;
+            this.textBox12.Name = "textBox12";
+            this.textBox12.ReadOnly = true;
+            this.textBox12.Size = new System.Drawing.Size(253, 24);
+            this.textBox12.TabIndex = 20;
+            this.textBox12.Text = "Steer Stick Angle:";
+            this.textBox12.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // textBox11
+            // 
+            this.textBox11.Location = new System.Drawing.Point(479, 142);
+            this.textBox11.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox11.Multiline = true;
+            this.textBox11.Name = "textBox11";
+            this.textBox11.ReadOnly = true;
+            this.textBox11.Size = new System.Drawing.Size(253, 24);
+            this.textBox11.TabIndex = 19;
+            this.textBox11.Text = "TransY:";
+            this.textBox11.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // textBox10
+            // 
+            this.textBox10.Location = new System.Drawing.Point(479, 114);
+            this.textBox10.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox10.Multiline = true;
+            this.textBox10.Name = "textBox10";
+            this.textBox10.ReadOnly = true;
+            this.textBox10.Size = new System.Drawing.Size(253, 24);
+            this.textBox10.TabIndex = 16;
+            this.textBox10.Text = "TransX: ";
+            this.textBox10.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // textBox8
+            // 
+            this.textBox8.Location = new System.Drawing.Point(479, 30);
+            this.textBox8.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox8.Multiline = true;
+            this.textBox8.Name = "textBox8";
+            this.textBox8.ReadOnly = true;
+            this.textBox8.Size = new System.Drawing.Size(253, 24);
+            this.textBox8.TabIndex = 18;
+            this.textBox8.Text = "Angle: ";
+            this.textBox8.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // textBox9
+            // 
+            this.textBox9.Location = new System.Drawing.Point(479, 86);
+            this.textBox9.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.textBox9.Multiline = true;
+            this.textBox9.Name = "textBox9";
+            this.textBox9.ReadOnly = true;
+            this.textBox9.Size = new System.Drawing.Size(253, 24);
+            this.textBox9.TabIndex = 17;
+            this.textBox9.Text = "Desired Angle:";
+            this.textBox9.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // Form1
             // 
@@ -422,7 +519,7 @@ namespace ComputerToArduino
             this.Controls.Add(this.button3);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.groupBox7);
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "Form1";
             this.Text = "Computer to Arduino";
@@ -445,6 +542,8 @@ namespace ComputerToArduino
             this.groupBox6.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
+            this.groupBox7.ResumeLayout(false);
+            this.groupBox7.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -479,6 +578,13 @@ namespace ComputerToArduino
         private System.Windows.Forms.TextBox textBox5;
         private System.Windows.Forms.PictureBox pictureBox4;
         private System.Windows.Forms.TextBox textBox7;
+        private System.Windows.Forms.GroupBox groupBox7;
+        private System.Windows.Forms.TextBox textBox11;
+        private System.Windows.Forms.TextBox textBox10;
+        private System.Windows.Forms.TextBox textBox8;
+        private System.Windows.Forms.TextBox textBox9;
+        private System.Windows.Forms.TextBox textBox12;
+        private System.Windows.Forms.TextBox textBox13;
     }
 }
 

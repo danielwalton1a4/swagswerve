@@ -42,14 +42,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ComputerToArduino.exe" size="34304">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ComputerToArduino.exe" size="36864">
       <assemblyIdentity name="ComputerToArduino" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>pp08pfpKFfA8OR/+S/ixUyNmPn3hsOkmqni31NOqzNI=</dsig:DigestValue>
+        <dsig:DigestValue>8cON1G/krLi891XE26Tus/8pDq4Jg7POfNwdv+k5nwk=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
