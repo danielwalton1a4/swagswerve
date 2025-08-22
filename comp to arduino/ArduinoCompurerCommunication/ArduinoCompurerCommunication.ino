@@ -1,7 +1,22 @@
 #include "MPU9250.h"
 #include <string.h>
+#include <Servo.h>
+#include <PID_v1.h>
 
-const int BUTTON_PIN = 7;
+#define INPUT_MIN -1000
+#define INPUT_MAX 1000
+#define OUTPUT_MIN 1000
+#define OUTPUT_MAX 2000
+
+long drive = 0;
+long drive1 = 0;
+
+double Setpoint, Input, Output;
+double kp_s = 2;
+double ki_s = 5;
+double kd_s = 1;
+PID steer1pid(&Input, &Output, &Setpoint, kp_s, ki_s, kd_s, DIRECT);
+Servo steer1;
 
 MPU9250 mpu;
 float yaw0 = 0;
@@ -17,7 +32,6 @@ void setup() {
   Serial.begin(115200);
   Wire.begin();
   delay(2000);
-  //pinMode(LED_BUILTIN,OUTPUT);
 
   if (!mpu.setup(0x68)) {  // change to your own address
     while (1) {
@@ -55,6 +69,12 @@ void commandHandler() {
     //TODO: put angle command here
   } else if (GetID(inputString) == "M1D"){
     //TODO: put drive command here
+  } else if (GetID(inputString) == "KPS"){
+    kp_s = strtok(GetPayload(inputString));
+  } else if (GetID(inputString) == "KIS"){
+    ki_s = strtok(GetPayload(inputString));
+  } else if (GetID(inputString) == "KDS"){
+    kd_s = strtok(GetPayload(inputString));
   }
 }
 
