@@ -8,13 +8,15 @@
 #define OUTPUT_MIN 1000
 #define OUTPUT_MAX 2000
 
+#define STEER1_ENC_PIN 10
+
 long drive = 0;
 long drive1 = 0;
 
 double Setpoint, Input, Output;
-double kp_s = 2;
-double ki_s = 5;
-double kd_s = 1;
+double kp_s = 5.55;
+double ki_s = 0.1;
+double kd_s = 10;
 PID steer1pid(&Input, &Output, &Setpoint, kp_s, ki_s, kd_s, DIRECT);
 Servo steer1;
 

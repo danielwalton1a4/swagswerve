@@ -10,22 +10,18 @@
 
 #define STEER1_ENC_PIN 10
 
-
-
 long drive = 0;
 long drive1 = 0;
 
 double Setpoint, Input, Output;
 
-double kp = 0.1;
-double ki = 0.01;
+double kp = 5;
+double ki = 8;
 double kd = 0.1;
 
 double steer1_angle = 0;
 
 long int loopnum = 0;
-
-bool didCompute = false;
 
 PID steer1pid(&Input, &Output, &Setpoint, kp, ki, kd, DIRECT);
 Servo steer1;
@@ -39,9 +35,10 @@ void setup() {
   Serial.begin(115200);
   delay(2000);
 
-  steer1pid.SetOutputLimits(1250, 1750);
+  steer1pid.SetOutputLimits(INPUT_MIN * (2.0/4.0), INPUT_MAX * (2.0/4.0));
   Input = (double) steer1_enc.readAngle();
   Setpoint = 180;
+  steer1pid.SetSampleTime(5);
   steer1pid.SetMode(AUTOMATIC);
 }
 
@@ -52,16 +49,17 @@ void loop() {
 
   Input = (double) steer1_enc.readAngle();
   steer1pid.Compute();
-  steer1.write(Output);
-  if(loopnum % 1000 == 0){
+  drive = map(Output, INPUT_MIN, INPUT_MAX, OUTPUT_MIN, OUTPUT_MAX);
+  steer1.write(drive);
+  if(loopnum % 300 == 0){
     Serial.print("\n=================\nInput: ");
     Serial.println(Input);
 
     Serial.print("\nOutput: ");
     Serial.println(Output);
     
-    Serial.print("\Computed?: ");
-    Serial.println(didCompute);
+    Serial.print("\Drive: ");
+    Serial.println(drive);
   }
 }
 
