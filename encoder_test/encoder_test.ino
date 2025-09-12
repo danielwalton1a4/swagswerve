@@ -25,14 +25,14 @@
 #include <AS5X47.h>
 
 // Define where the CSN Pin in connected. 
-#define s1EncPin 2
-#define d1EncPin 3
-#define s2EncPin 4
-#define d2EncPin 5
-#define s3EncPin 6
-#define d3EncPin 7
-#define s4EncPin 8
-#define d4EncPin 9
+#define s1EncPin 3
+#define d1EncPin 2
+#define s2EncPin 5
+#define d2EncPin 4
+#define s3EncPin 7
+#define d3EncPin 6
+#define s4EncPin 9
+#define d4EncPin 8
 
 // Start connection to the sensor.
 AS5X47 s1Enc(s1EncPin);
@@ -57,42 +57,42 @@ void loop() {
   Serial.println(angle);
 
 
-  angle = d1Enc.readAngle();
-  Serial.print("d1Enc: ");
-  Serial.println(angle);
+  // angle = d1Enc.readAngle();
+  // Serial.print("d1Enc: ");
+  // Serial.println(angle);
 
 
-  angle = s2Enc.readAngle();
-  Serial.print("s2Enc: ");
-  Serial.println(angle);
+  // angle = s2Enc.readAngle();
+  // Serial.print("s2Enc: ");
+  // Serial.println(angle);
 
 
-  angle = d2Enc.readAngle();
-  Serial.print("d2Enc: ");
-  Serial.println(angle);
+  // angle = d2Enc.readAngle();
+  // Serial.print("d2Enc: ");
+  // Serial.println(angle);
 
 
-  angle = s3Enc.readAngle();
-  Serial.print("s3Enc: ");
-  Serial.println(angle);
+  // angle = s3Enc.readAngle();
+  // Serial.print("s3Enc: ");
+  // Serial.println(angle);
 
 
-  angle = d3Enc.readAngle();
-  Serial.print("d3Enc: ");
-  Serial.println(angle);
+  // angle = d3Enc.readAngle();
+  // Serial.print("d3Enc: ");
+  // Serial.println(angle);
 
 
-  angle = s4Enc.readAngle();
-  Serial.print("s4Enc: ");
-  Serial.println(angle);
+  // angle = s4Enc.readAngle();
+  // Serial.print("s4Enc: ");
+  // Serial.println(angle);
 
 
-  angle = d4Enc.readAngle();
-  Serial.print("d4Enc: ");
-  Serial.println(angle);
+  // angle = d4Enc.readAngle();
+  // Serial.print("d4Enc: ");
+  // Serial.println(angle);
 
 
-  Serial.print("\n\n================\n\n");
-  delay(500);
+  //Serial.print("\n\n================\n\n");
+  delay(50);
 
 }
