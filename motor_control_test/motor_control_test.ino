@@ -6,15 +6,16 @@
 // constants for motor controllers
 #define INPUT_MINIMUM -180     //0 to 360 is the range of the encoder
 #define INPUT_MAXIMUM 180
-#define OUTPUT_MINIMUM 150  //after doing some testing, it looks like the rangefor the PCA9685 is 0-400.
-#define OUTPUT_MAXIMUM 250  //so 200 is dead center with 0 motor drive, below is reverse and above is forward
+#define OUTPUT_MINIMUM 155  //after doing some testing, it looks like the rangefor the PCA9685 is 0-400.
+#define OUTPUT_MAXIMUM 255  //so 200 is dead center with 0 motor drive, below is reverse and above is forward
 
 #define s1EncPin 3  //pin # for STEER1 encoder and PWM channel
+#define DRV1_PIN 2  //pin # for DRIVE1 encoder and pwm channel
 
 #define I2CAdd 0x40       //I2C address of servo shield
 
 #define SAMPLE_TIME 1 //sample time for PID loop in ms
-#define ROLLING_AVERAGE_LENGTH 5 //rolling avg window for encoder readings
+#define ROLLING_AVERAGE_LENGTH 2 //rolling avg window for encoder readings
 
 HCPCA9685 HCPCA9685(I2CAdd);
 
@@ -24,9 +25,9 @@ long drive1 = 0;
 double Setpoint, Input, Output;
 double mappedOutput = 200;
 
-double kp = 5;
-double ki = 0;
-double kd = 0;
+double kp = 10;
+double ki = 0.16;
+double kd = 0.05;
 
 const long print_interval = 100;
 unsigned long printMillis = 0;
@@ -36,6 +37,8 @@ unsigned long PID_Millis = 0;
 
 const long Direction_interval = 2000;
 unsigned long Direction_Millis = 0;
+
+int drive_1 = 200;
 
 int loopNum = 0;
 float s1EncReadings[ROLLING_AVERAGE_LENGTH];
@@ -66,6 +69,8 @@ void setup() {
 
   HCPCA9685.Init(SERVO_MODE);
   HCPCA9685.Sleep(false);
+  HCPCA9685.Servo(s1EncPin, 210);
+  HCPCA9685.Servo(DRV1_PIN, 210);
 
   for(int i = 0; i < ROLLING_AVERAGE_LENGTH; i++){
     s1EncReadings[i] = Input;;
@@ -115,21 +120,30 @@ void loop() {
 
     Serial.print("\n\nReal s1Enc: ");
     Serial.println(s1EncReadings[0]);
-    Serial.print("s1Enc Average: ");
-    Serial.println(Input);
-    Serial.print("Output: ");
-    Serial.println(Output);
+    // Serial.print("s1Enc Average: ");
+    // Serial.println(Input);
+    // Serial.print("Output: ");
+    // Serial.println(Output);
     Serial.print("Mapped Output: ");
     Serial.println(mappedOutput);
   }
 
-  // if (currentMillis - Direction_Millis >= Direction_interval) {
-  //   Direction_Millis = currentMillis;
+  if (currentMillis - Direction_Millis >= Direction_interval) {
+    Direction_Millis = currentMillis;
 
-  //   if(Setpoint == 150){
-  //     Setpoint = 200;
-  //   } else {
-  //     Setpoint = 150;
-  //   }
-  // }
+    // if(Setpoint == 150){
+    //   Setpoint = 200;
+    // } else {
+    //   Setpoint = 150;
+    // }
+
+    // if(drive_1 == 260){
+    //   drive_1 = 160;
+    // } else {
+    //   drive_1 = 260;
+    // }
+    // // HCPCA9685.Servo(DRV1_PIN, drive_1);
+    // Serial.print("Drive: ");
+    // Serial.println(drive_1);
+  }
 }
